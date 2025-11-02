@@ -17,7 +17,7 @@ public class WeatherFacade {
     private final ManualUpdateStrategy manual;
 
     public WeatherData current(String source, String mode) {
-        WeatherSource ws = sourceFactory.build(source); // см. п.3
+        WeatherSource ws = sourceFactory.build(source);
         if ("rt".equalsIgnoreCase(mode) || "realtime".equalsIgnoreCase(mode)) {
             return realTime.fetch(ws);
         }
