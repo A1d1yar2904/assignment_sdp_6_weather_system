@@ -1,20 +1,22 @@
 package weather.app.model;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class WeatherData {
-    private final double temperature;
-    private final int humidity;
-    private final int pressure;
-    private final String source;
+    private String city;
+    private double temperature;
+    private String condition;
+    private Integer humidity;
+    private Integer pressure;
+    private Integer wind;
+    private String source;
 
-    public WeatherData(double temperature, int humidity, int pressure, String source) {
-        this.temperature = temperature;
-        this.humidity = humidity;
-        this.pressure = pressure;
-        this.source = source;
+    public static WeatherData sample(String city, String sourceTag) {
+        return new WeatherData(city, 22.5, "clear", 45, 1013, 12, sourceTag);
     }
-
-    public double getTemperature() { return temperature; }
-    public int getHumidity() { return humidity; }
-    public int getPressure() { return pressure; }
-    public String getSource() { return source; }
 }

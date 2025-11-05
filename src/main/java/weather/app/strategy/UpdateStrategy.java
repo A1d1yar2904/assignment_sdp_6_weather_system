@@ -4,5 +4,5 @@ import weather.app.factory.WeatherSource;
 import weather.app.model.WeatherData;
 
 public interface UpdateStrategy {
-    WeatherData fetch(WeatherSource src);
+    WeatherData fetch(WeatherSource src, String city);
 }

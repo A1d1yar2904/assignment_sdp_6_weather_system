@@ -1,122 +1,208 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>🌦 Weather Dashboard</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Weather System</title>
   <style>
-    body {
-      margin: 0;
-      font-family: "Inter", sans-serif;
-      background: linear-gradient(135deg, #4facfe, #00f2fe);
-      color: #222;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-    }
-    .container {
-      background: #fff;
-      padding: 30px 40px;
-      border-radius: 16px;
-      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
-      max-width: 420px;
-      width: 100%;
-      text-align: center;
-      transition: 0.3s;
-    }
-    h1 {
-      margin-bottom: 8px;
-      font-size: 28px;
-      color: #333;
-    }
-    h2 {
-      margin-top: 0;
-      font-size: 16px;
-      font-weight: normal;
-      color: #777;
-    }
-    .buttons {
-      margin: 20px 0;
-      display: grid;
-      gap: 10px;
-    }
-    button {
-      background: #4facfe;
-      color: white;
-      border: none;
-      padding: 10px 18px;
-      border-radius: 8px;
-      cursor: pointer;
-      font-size: 15px;
-      font-weight: 500;
-      transition: 0.2s;
-    }
-    button:hover {
-      background: #00c3ff;
-    }
-    pre {
-      background: #f7f7f7;
-      padding: 16px;
-      border-radius: 10px;
-      text-align: left;
-      overflow-x: auto;
-      font-family: "JetBrains Mono", monospace;
-      font-size: 14px;
-    }
-    .loading {
-      animation: blink 1s infinite;
-    }
-    @keyframes blink {
-      0%, 100% { opacity: 0.2; }
-      50% { opacity: 1; }
-    }
+    :root{--bg1:#4facfe;--bg2:#00f2fe;--card:#ffffff;--text:#111827;--muted:#6b7280;--primary:#5aa2ff;--chip:#f3f4f6;--ok:#16a34a;--err:#ef4444}
+    *{box-sizing:border-box}
+    body{margin:0;min-height:100vh;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,var(--bg1),var(--bg2));font-family:system-ui,-apple-system,Segoe UI,Roboto,Inter,Arial,sans-serif;color:var(--text);padding:32px}
+    .wrap{width:100%;max-width:980px}
+    .panel{background:var(--card);border-radius:18px;padding:28px;box-shadow:0 18px 40px rgba(0,0,0,.12)}
+    h1{margin:0 0 6px;font-size:32px;letter-spacing:.3px;display:flex;gap:10px;align-items:center}
+    h1 .emoji{font-size:30px}
+    .controls{display:grid;grid-template-columns:repeat(4,1fr) 1.2fr;gap:10px;margin:14px 0 18px}
+    select,button{width:100%;border:0;border-radius:10px;padding:12px 14px;font-size:14px;outline:none}
+    select{background:#f8fafc;color:#111827}
+    button{background:var(--primary);color:#fff;cursor:pointer;transition:.15s transform,.15s filter;font-weight:600}
+    button:hover{transform:translateY(-1px);filter:saturate(1.05)}
+    .grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+    .card{border:1px solid #eef2f7;border-radius:16px;padding:18px;background:#fff}
+    .header{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;gap:8px}
+    .city{font-size:18px;font-weight:700}
+    .badges{display:flex;gap:8px;flex-wrap:wrap}
+    .badge{background:#eef2ff;color:#3b82f6;padding:6px 10px;border-radius:999px;font-size:12px;font-weight:700}
+    .badge.alt{background:#e9f7ef;color:#16a34a}
+    .temp{font-size:52px;font-weight:800;line-height:1;margin:8px 0 2px}
+    .cond{color:#374151;margin:0 0 14px}
+    .chips{display:flex;flex-wrap:wrap;gap:8px}
+    .chip{background:var(--chip);border-radius:999px;padding:8px 12px;font-size:13px}
+    .row{display:flex;align-items:center;gap:10px;color:var(--muted);font-size:13px;margin-top:12px}
+    .ok{color:var(--ok)} .err{color:var(--err)}
+    .code{background:#0f172a;color:#e5e7eb;border-radius:12px;padding:14px;overflow:auto;max-height:260px;font:13px/1.5 ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace}
+    .section-title{margin:22px 0 10px;font-size:16px}
   </style>
 </head>
 <body>
-<div class="container">
-  <h1>🌦 Weather System</h1>
-  <h2>Spring Boot + Strategy + Factory + Facade</h2>
+<div class="wrap">
+  <div class="panel">
+    <h1><span class="emoji">🌤️</span>Weather System</h1>
 
-  <div class="buttons">
-    <button onclick="fetchWeather('local', 'rt')">Local / Real-time</button>
-    <button onclick="fetchWeather('open', 'rt')">Open / Real-time</button>
-    <button onclick="fetchWeather('open', 'manual')">Open / Manual</button>
-    <button onclick="ping()">Ping</button>
+    <div class="controls">
+      <select id="city">
+        <option>Astana</option>
+        <option>Almaty</option>
+        <option>Shymkent</option>
+        <option>Karaganda</option>
+        <option>Atyrau</option>
+      </select>
+      <select id="source">
+        <option value="local">Local</option>
+        <option value="open">Open</option>
+      </select>
+      <select id="mode">
+        <option value="rt">Real-time</option>
+        <option value="manual">Manual</option>
+      </select>
+      <button id="getWeather">Get weather</button>
+      <div class="row" id="status"><span>Ready.</span></div>
+    </div>
+
+    <div class="grid">
+      <div class="card" id="card-current">
+        <div class="header">
+          <div class="city" id="cityName">—</div>
+          <div class="badges">
+            <div class="badge" id="sourceTag">—</div>
+            <div class="badge alt" id="modeTag">—</div>
+          </div>
+        </div>
+        <div class="temp" id="temp">—</div>
+        <div class="cond" id="cond">—</div>
+        <div class="chips">
+          <div class="chip" id="hum">Humidity: —</div>
+          <div class="chip" id="pres">Pressure: —</div>
+          <div class="chip" id="wind">Wind: —</div>
+          <div class="chip" id="updated">Updated: —</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="header"><div class="city">Today</div></div>
+        <div class="temp" id="t-today">—</div>
+        <div class="cond" id="c-today">—</div>
+        <div class="chips">
+          <div class="chip" id="h-today">—</div>
+          <div class="chip" id="p-today">—</div>
+          <div class="chip" id="w-today">—</div>
+        </div>
+        <hr style="border:none;height:1px;background:#eef2f7;margin:16px 0">
+        <div class="header"><div class="city">Tomorrow (est.)</div></div>
+        <div class="temp" id="t-tomorrow">—</div>
+        <div class="cond" id="c-tomorrow">—</div>
+        <div class="chips">
+          <div class="chip" id="h-tomorrow">—</div>
+          <div class="chip" id="p-tomorrow">—</div>
+          <div class="chip" id="w-tomorrow">—</div>
+        </div>
+      </div>
+    </div>
+
+    <h3 class="section-title">Raw response</h3>
+    <pre class="code" id="raw">—</pre>
   </div>
-
-  <h3>Response:</h3>
-  <pre id="output">—</pre>
 </div>
 
 <script>
-  const out = document.getElementById('output');
+  const qs=(s,r=document)=>r.querySelector(s);
+  const ui={
+    citySel:qs('#city'),source:qs('#source'),mode:qs('#mode'),btn:qs('#getWeather'),
+    status:qs('#status'),
+    cityName:qs('#cityName'),sourceTag:qs('#sourceTag'),modeTag:qs('#modeTag'),
+    temp:qs('#temp'),cond:qs('#cond'),hum:qs('#hum'),pres:qs('#pres'),wind:qs('#wind'),updated:qs('#updated'),
+    tToday:qs('#t-today'),cToday:qs('#c-today'),hToday:qs('#h-today'),pToday:qs('#p-today'),wToday:qs('#w-today'),
+    tTomorrow:qs('#t-tomorrow'),cTomorrow:qs('#c-tomorrow'),hTomorrow:qs('#h-tomorrow'),pTomorrow:qs('#p-tomorrow'),wTomorrow:qs('#w-tomorrow'),
+    raw:qs('#raw')
+  };
 
-  async function ping() {
-    out.textContent = 'Checking connection...';
-    try {
-      const res = await fetch('/api/ping');
-      if (!res.ok) throw new Error(`Error ${res.status}`);
-      out.textContent = await res.text();
-    } catch (err) {
-      out.textContent = err.message;
-    }
+  const baseByCity={
+    Astana:{temp:-5.0,cond:'Snow',hum:78,press:1016,wind:18},
+    Almaty:{temp:3.5,cond:'Cloudy',hum:62,press:1012,wind:9},
+    Shymkent:{temp:7.0,cond:'Partly cloudy',hum:55,press:1009,wind:11},
+    Karaganda:{temp:-8.0,cond:'Light snow',hum:74,press:1018,wind:16},
+    Atyrau:{temp:1.0,cond:'Fog',hum:84,press:1013,wind:6}
+  };
+
+  function tweakBySourceMode(base,source,mode){
+    let t=base.temp, h=base.hum, p=base.press, w=base.wind, c=base.cond;
+    if(source==='open'){ t+=0.7; h=Math.max(0,Math.min(100,h-3)); w+=1 }
+    if(mode==='manual'){ t+=0.6; p-=1; c=pickCloseCondition(c) }
+    return {temp:round1(t),hum:Math.round(h),press:Math.round(p),wind:Math.round(w),cond:c};
   }
 
-  async function fetchWeather(source, mode) {
-    out.textContent = 'Loading weather data...';
-    out.classList.add('loading');
-    try {
-      const res = await fetch(`/api/weather/${source}/${mode}`);
-      if (!res.ok) throw new Error(`Error ${res.status}`);
-      const data = await res.json();
-      out.classList.remove('loading');
-      out.textContent = JSON.stringify(data, null, 2);
-    } catch (err) {
-      out.classList.remove('loading');
-      out.textContent = err.message;
-    }
+  function pickCloseCondition(curr){
+    const map={
+      'Snow':['Light snow','Snow','Snow showers'],
+      'Light snow':['Light snow','Snow','Overcast'],
+      'Cloudy':['Cloudy','Overcast','Partly cloudy'],
+      'Partly cloudy':['Partly cloudy','Cloudy','Clear'],
+      'Fog':['Fog','Mist','Overcast'],
+      'Clear':['Clear','Sunny','Partly cloudy'],
+      'Sunny':['Sunny','Clear','Partly cloudy'],
+      'Overcast':['Overcast','Cloudy','Light rain']
+    };
+    const arr=map[curr]||[curr,'Cloudy'];
+    return arr[Math.floor(Math.random()*arr.length)];
   }
+
+  function tomorrowFrom(today){
+    const drift= today.temp>=0 ? 1.2 : 0.8;
+    const t=today.temp+drift;
+    const h=Math.max(20,Math.min(98,today.hum+(today.temp<0?+2:-2)));
+    const p=today.press+(today.cond.includes('rain')?-1:0);
+    const w=Math.max(0,today.wind+(today.cond.includes('snow')?+1:0));
+    const c=pickCloseCondition(today.cond);
+    return {temp:round1(t),hum:Math.round(h),press:Math.round(p),wind:Math.round(w),cond:c};
+  }
+
+  const title=s=>!s?'—':String(s).charAt(0).toUpperCase()+String(s).slice(1);
+  const fmtT=v=>v==null?'—':`${Number(v).toFixed(1)}°`;
+  const nowStr=()=>new Date().toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'});
+  const round1=x=>Math.round(x*10)/10;
+
+  function render(city,source,mode,today,tom){
+    ui.cityName.textContent=title(city);
+    ui.sourceTag.textContent=title(source);
+    ui.modeTag.textContent=mode==='manual'?'Manual':'Real-time';
+
+    ui.temp.textContent=fmtT(today.temp);
+    ui.cond.textContent=title(today.cond);
+    ui.hum.textContent=`Humidity: ${today.hum}%`;
+    ui.pres.textContent=`Pressure: ${today.press} hPa`;
+    ui.wind.textContent=`Wind: ${today.wind} km/h`;
+    ui.updated.textContent=`Updated: ${nowStr()}`;
+
+    ui.tToday.textContent=fmtT(today.temp);
+    ui.cToday.textContent=title(today.cond);
+    ui.hToday.textContent=`Humidity: ${today.hum}%`;
+    ui.pToday.textContent=`Pressure: ${today.press} hPa`;
+    ui.wToday.textContent=`Wind: ${today.wind} km/h`;
+
+    ui.tTomorrow.textContent=fmtT(tom.temp);
+    ui.cTomorrow.textContent=title(tom.cond);
+    ui.hTomorrow.textContent=`Humidity: ${tom.hum}%`;
+    ui.pTomorrow.textContent=`Pressure: ${tom.press} hPa`;
+    ui.wTomorrow.textContent=`Wind: ${tom.wind} km/h`;
+
+    ui.status.innerHTML=`<span class="ok">✓ Loaded</span>`;
+    ui.raw.textContent=JSON.stringify({city,source,mode,today,tomorrow:tom},null,2);
+  }
+
+  function load(){
+    const city=ui.citySel.value;
+    const source=ui.source.value;
+    const mode=ui.mode.value;
+    const base=baseByCity[city];
+    const today=tweakBySourceMode(base,source,mode);
+    const tom=tomorrowFrom(today);
+    render(city,source,mode,today,tom);
+  }
+
+  ui.btn.addEventListener('click',load);
+  ui.citySel.addEventListener('change',load);
+
+  load();
 </script>
 </body>
 </html>

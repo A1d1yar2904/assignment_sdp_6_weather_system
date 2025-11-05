@@ -1,7 +1,7 @@
 package weather.app.web;
 
-import org.springframework.web.bind.annotation.*;
 import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.*;
 import weather.app.facade.WeatherFacade;
 import weather.app.model.WeatherData;
 
@@ -12,21 +12,13 @@ public class WeatherController {
 
     private final WeatherFacade weatherFacade;
 
-    @GetMapping({"/api/ping", "/ping"})
-    public String ping() {
-        return "OK";
-    }
+    @GetMapping("/ping")
+    public String ping() { return "OK"; }
 
-
-    @GetMapping("/weather/{source}/{mode}")
-    public WeatherData getWeather(
-            @PathVariable String source,
-            @PathVariable String mode
-    ) {
-        try {
-            return weatherFacade.current(source.toLowerCase(), mode.toLowerCase());
-        } catch (Exception e) {
-            return new WeatherData(0.0, 0, 0, "Error: " + e.getMessage());
-        }
+    @GetMapping("/current")
+    public WeatherData getCurrent(@RequestParam String source,
+                                  @RequestParam String mode,
+                                  @RequestParam(required = false) String city) {
+        return weatherFacade.current(source, mode, city);
     }
 }

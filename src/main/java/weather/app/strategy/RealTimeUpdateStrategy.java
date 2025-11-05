@@ -1,13 +1,12 @@
 package weather.app.strategy;
 
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import weather.app.factory.WeatherSource;
 import weather.app.model.WeatherData;
 
-@Component
+@Service
 public class RealTimeUpdateStrategy implements UpdateStrategy {
-    @Override
-    public WeatherData fetch(WeatherSource src) {
-        return src.read();
+    public WeatherData fetch(WeatherSource src, String city) {
+        return src.read(city);
     }
 }

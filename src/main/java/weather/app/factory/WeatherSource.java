@@ -4,5 +4,6 @@ import weather.app.model.WeatherData;
 
 public interface WeatherSource {
     String name();
-    WeatherData read();
+    WeatherData read(String city);
+    WeatherData readManual(String city);
 }
